@@ -1255,7 +1255,7 @@ class RGWRados : public AdminSocketHook
   int get_olh_target_state(RGWObjectCtx& rctx, const RGWBucketInfo& bucket_info, const rgw_obj& obj,
                            RGWObjState *olh_state, RGWObjState **target_state);
   int get_obj_state_impl(RGWObjectCtx *rctx, const RGWBucketInfo& bucket_info, const rgw_obj& obj, RGWObjState **state,
-                         bool follow_olh, bool assume_noent = false);
+                         bool follow_olh, optional_yield y, bool assume_noent = false);
   int append_atomic_test(RGWObjectCtx *rctx, const RGWBucketInfo& bucket_info, const rgw_obj& obj,
                          librados::ObjectOperation& op, RGWObjState **state);
   int append_atomic_test(const RGWObjState* astate, librados::ObjectOperation& op);
@@ -2036,9 +2036,9 @@ public:
                         optional_yield y);
 
   int get_obj_state(RGWObjectCtx *rctx, const RGWBucketInfo& bucket_info, const rgw_obj& obj, RGWObjState **state,
-                    bool follow_olh, bool assume_noent = false);
-  int get_obj_state(RGWObjectCtx *rctx, const RGWBucketInfo& bucket_info, const rgw_obj& obj, RGWObjState **state) {
-    return get_obj_state(rctx, bucket_info, obj, state, true);
+                    bool follow_olh, optional_yield y, bool assume_noent = false);
+  int get_obj_state(RGWObjectCtx *rctx, const RGWBucketInfo& bucket_info, const rgw_obj& obj, RGWObjState **state, optional_yield y) {
+    return get_obj_state(rctx, bucket_info, obj, state, true, y);
   }
 
   using iterate_obj_cb = int (*)(const rgw_raw_obj&, off_t, off_t,
@@ -2062,7 +2062,7 @@ public:
 
   int raw_obj_stat(rgw_raw_obj& obj, uint64_t *psize, ceph::real_time *pmtime, uint64_t *epoch,
                    map<string, bufferlist> *attrs, bufferlist *first_chunk,
-                   RGWObjVersionTracker *objv_tracker);
+                   RGWObjVersionTracker *objv_tracker, optional_yield y);
 
   int obj_operate(const RGWBucketInfo& bucket_info, const rgw_obj& obj, librados::ObjectWriteOperation *op);
   int obj_operate(const RGWBucketInfo& bucket_info, const rgw_obj& obj, librados::ObjectReadOperation *op);

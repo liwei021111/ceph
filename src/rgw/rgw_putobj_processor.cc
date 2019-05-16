@@ -514,7 +514,7 @@ int AppendObjectProcessor::process_first_chunk(bufferlist &&data, rgw::putobj::D
 int AppendObjectProcessor::prepare()
 {
   RGWObjState *astate;
-  int r = store->get_obj_state(&obj_ctx, bucket_info, head_obj, &astate);
+  int r = store->get_obj_state(&obj_ctx, bucket_info, head_obj, &astate, null_yield);
   if (r < 0) {
     return r;
   }
